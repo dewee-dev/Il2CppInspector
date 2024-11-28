@@ -51,33 +51,62 @@ jobs:
         # 定义插件列表
         $plugins = @(
           @{
-            Name = "Il2CppHook"
+            Name = "Cpp2IL"
+            Url = "https://github.com/SamboyCoding/Cpp2IL/releases/latest/download/Cpp2IL-Windows.zip"
+          },
+          @{
+            Name = "Il2CppDumper"
+            Url = "https://github.com/Perfare/Il2CppDumper/releases/latest/download/Il2CppDumper-net6.0.zip"
+          },
+          @{
+            Name = "Il2CppAssemblyUnhollower"
+            Url = "https://github.com/knah/Il2CppAssemblyUnhollower/releases/latest/download/Il2CppAssemblyUnhollower.zip"
+          },
+          @{
+            Name = "Il2CppDumperTool"
+            Url = "https://github.com/AndnixSH/Il2CppDumper-GUI/releases/latest/download/Il2CppDumper-GUI.zip"
+          },
+          @{
+            Name = "dnSpyEx"
             Url = "https://github.com/dnSpyEx/dnSpy/releases/latest/download/dnSpy-net-win64.zip"
           }
-          # 添加其他插件下载链接
         )
         
         # 下载并解压插件
         foreach ($plugin in $plugins) {
-          $tempFile = [System.IO.Path]::GetTempFileName()
-          
-          # 下载插件
-          Invoke-WebRequest -Uri $plugin.Url -OutFile $tempFile
-          
-          # 重命名为zip
-          $zipFile = $tempFile + ".zip"
-          Rename-Item -Path $tempFile -NewName $zipFile
-          
-          # 创建插件目录
-          $pluginDir = Join-Path "plugins" $plugin.Name
-          New-Item -ItemType Directory -Force -Path $pluginDir
-          
-          # 解压插件
-          Expand-Archive -Path $zipFile -DestinationPath $pluginDir -Force
-          
-          # 清理临时文件
-          Remove-Item $zipFile -Force
+            Write-Host "正在下载插件: $($plugin.Name)"
+            try {
+                $tempFile = [System.IO.Path]::GetTempFileName()
+                
+                # 下载插件
+                Invoke-WebRequest -Uri $plugin.Url -OutFile $tempFile -UseBasicParsing
+                
+                # 重命名为zip
+                $zipFile = $tempFile + ".zip"
+                Rename-Item -Path $tempFile -NewName $zipFile -Force
+                
+                # 创建插件目录
+                $pluginDir = Join-Path "plugins" $plugin.Name
+                New-Item -ItemType Directory -Force -Path $pluginDir
+                
+                # 解压插件
+                Write-Host "正在解压插件: $($plugin.Name)"
+                Expand-Archive -Path $zipFile -DestinationPath $pluginDir -Force
+                
+                # 清理临时文件
+                Remove-Item $zipFile -Force
+                
+                Write-Host "插件 $($plugin.Name) 安装完成"
+            }
+            catch {
+                Write-Host "下载或安装插件 $($plugin.Name) 时出错: $_"
+                throw
+            }
         }
+        
+        # 显示插件目录结构
+        Write-Host "插件目录结构："
+        Get-ChildItem -Path plugins -Recurse | Select-Object FullName
 
     - name: Build CLI
       run: |
@@ -119,6 +148,7 @@ jobs:
       with:
         name: ${{ matrix.artifact }}-CLI
         path: ${{ matrix.artifact }}-CLI.zip
+        if-no-files-found: error
 
     - name: Upload GUI artifact (Windows only)
       if: matrix.platform == 'win-x64'
@@ -126,6 +156,7 @@ jobs:
       with:
         name: ${{ matrix.artifact }}-GUI
         path: ${{ matrix.artifact }}-GUI.zip
+        if-no-files-found: error
 
   release:
     needs: build
