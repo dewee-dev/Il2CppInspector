@@ -42,6 +42,43 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore ${{ env.SOLUTION_FILE }}
 
+    - name: Download and prepare plugins
+      shell: pwsh
+      run: |
+        # 创建插件目录
+        New-Item -ItemType Directory -Force -Path plugins
+        
+        # 定义插件列表
+        $plugins = @(
+          @{
+            Name = "Il2CppHook"
+            Url = "https://github.com/dnSpyEx/dnSpy/releases/latest/download/dnSpy-net-win64.zip"
+          }
+          # 添加其他插件下载链接
+        )
+        
+        # 下载并解压插件
+        foreach ($plugin in $plugins) {
+          $tempFile = [System.IO.Path]::GetTempFileName()
+          
+          # 下载插件
+          Invoke-WebRequest -Uri $plugin.Url -OutFile $tempFile
+          
+          # 重命名为zip
+          $zipFile = $tempFile + ".zip"
+          Rename-Item -Path $tempFile -NewName $zipFile
+          
+          # 创建插件目录
+          $pluginDir = Join-Path "plugins" $plugin.Name
+          New-Item -ItemType Directory -Force -Path $pluginDir
+          
+          # 解压插件
+          Expand-Archive -Path $zipFile -DestinationPath $pluginDir -Force
+          
+          # 清理临时文件
+          Remove-Item $zipFile -Force
+        }
+
     - name: Build CLI
       run: |
         dotnet publish Il2CppInspector.CLI/Il2CppInspector.CLI.csproj `
@@ -61,21 +98,20 @@ jobs:
           -p:PublishSingleFile=true `
           -o publish/gui
 
-    - name: Get plugins
+    - name: Copy plugins
       shell: pwsh
       run: |
-        ./get-plugins.ps1
-        Copy-Item -Path plugins -Destination publish/cli/plugins -Recurse
+        Copy-Item -Path plugins -Destination publish/cli/plugins -Recurse -Force
         if ('${{ matrix.platform }}' -eq 'win-x64') {
-          Copy-Item -Path plugins -Destination publish/gui/plugins -Recurse
+          Copy-Item -Path plugins -Destination publish/gui/plugins -Recurse -Force
         }
 
     - name: Create ZIP archives
       shell: pwsh
       run: |
-        Compress-Archive -Path publish/cli/* -DestinationPath ${{ matrix.artifact }}-CLI.zip
+        Compress-Archive -Path publish/cli/* -DestinationPath ${{ matrix.artifact }}-CLI.zip -Force
         if ('${{ matrix.platform }}' -eq 'win-x64') {
-          Compress-Archive -Path publish/gui/* -DestinationPath ${{ matrix.artifact }}-GUI.zip
+          Compress-Archive -Path publish/gui/* -DestinationPath ${{ matrix.artifact }}-GUI.zip -Force
         }
 
     - name: Upload CLI artifact
