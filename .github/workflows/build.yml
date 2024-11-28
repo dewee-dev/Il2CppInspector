@@ -63,10 +63,6 @@ jobs:
             Url = "https://github.com/knah/Il2CppAssemblyUnhollower/releases/download/v0.4.18.0/Il2CppAssemblyUnhollower.0.4.18.0.zip"
           },
           @{
-            Name = "Il2CppDumperTool"
-            Url = "https://github.com/AndnixSH/Il2CppDumper-GUI/releases/latest/download/Il2CppDumper-GUI.zip"
-          },
-          @{
             Name = "dnSpyEx"
             Url = "https://github.com/dnSpyEx/dnSpy/releases/latest/download/dnSpy-net-win64.zip"
           }
