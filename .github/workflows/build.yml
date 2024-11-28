@@ -56,7 +56,7 @@ jobs:
           },
           @{
             Name = "Il2CppDumper"
-            Url = "https://github.com/Perfare/Il2CppDumper/releases/latest/download/Il2CppDumper-net6.0.zip"
+            Url = "https://github.com/Perfare/Il2CppDumper/releases/download/v6.7.40/Il2CppDumper-win-v6.7.40.zip"
           },
           @{
             Name = "Il2CppAssemblyUnhollower"
