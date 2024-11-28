@@ -64,7 +64,7 @@ jobs:
           },
           @{
             Name = "dnSpyEx"
-            Url = "https://github.com/dnSpyEx/dnSpy/releases/latest/download/dnSpy-net-win64.zip"
+            Url = "https://github.com/dnSpyEx/dnSpy/releases/download/v6.5.1/dnSpy-net-win64.zip"
           }
         )
         
