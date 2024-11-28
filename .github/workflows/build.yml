@@ -52,7 +52,7 @@ jobs:
         $plugins = @(
           @{
             Name = "Cpp2IL"
-            Url = "https://github.com/SamboyCoding/Cpp2IL/actions/runs/11960699169/artifacts/2220891965"
+            Url = "https://github.com/SamboyCoding/Cpp2IL/releases/download/2022.1.0-pre-release.18/Cpp2IL-2022.1.0-pre-release.18-Windows-Netframework472.zip"
           },
           @{
             Name = "Il2CppDumper"
