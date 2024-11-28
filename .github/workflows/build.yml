@@ -52,7 +52,7 @@ jobs:
         $plugins = @(
           @{
             Name = "Cpp2IL"
-            Url = "https://github.com/SamboyCoding/Cpp2IL/releases/latest/download/Cpp2IL-Windows.zip"
+            Url = "https://github.com/SamboyCoding/Cpp2IL/actions/runs/11960699169/artifacts/2220891965"
           },
           @{
             Name = "Il2CppDumper"
@@ -60,7 +60,7 @@ jobs:
           },
           @{
             Name = "Il2CppAssemblyUnhollower"
-            Url = "https://github.com/knah/Il2CppAssemblyUnhollower/releases/latest/download/Il2CppAssemblyUnhollower.zip"
+            Url = "https://github.com/knah/Il2CppAssemblyUnhollower/releases/download/v0.4.18.0/Il2CppAssemblyUnhollower.0.4.18.0.zip"
           },
           @{
             Name = "Il2CppDumperTool"
